@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int          @id @default(autoincrement())
+  email     String       @unique
+  username  String       @unique
+  password  String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  ratings   Rating[]
+  notes     RecipeNote[]
+  recipes   Recipe[]
+
+  @@map("users")
+}
+
+model Recipe {
+  id           Int          @id @default(autoincrement())
+  title        String
+  description  String?
+  instructions String
+  ingredients  String[]
+  cookTime     Int?
+  imageUrl     String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  authorId     Int
+  ratings      Rating[]
+  notes        RecipeNote[]
+  author       User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("recipes")
+}
+
+model Rating {
+  id       Int    @id @default(autoincrement())
+  rating   Int
+  userId   Int
+  recipeId Int
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, recipeId])
+  @@map("ratings")
+}
+
+model RecipeNote {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  recipeId  Int
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, recipeId])
+  @@map("recipe_notes")
+}
