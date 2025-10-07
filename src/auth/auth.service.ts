@@ -31,9 +31,9 @@ export class AuthService {
         errors: [
           {
             path: 'email',
-            message: 'An account with this email already exists'
-          }
-        ]
+            message: 'An account with this email already exists',
+          },
+        ],
       });
     }
 
@@ -48,9 +48,9 @@ export class AuthService {
         errors: [
           {
             path: 'username',
-            message: 'This username is already taken'
-          }
-        ]
+            message: 'This username is already taken',
+          },
+        ],
       });
     }
 
@@ -70,6 +70,7 @@ export class AuthService {
         email: true,
         username: true,
         createdAt: true,
+        updatedAt: true,
       },
     });
 
@@ -78,7 +79,13 @@ export class AuthService {
     const access_token = this.jwtService.sign(payload);
 
     return {
-      user,
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
       access_token,
     };
   }
@@ -98,9 +105,9 @@ export class AuthService {
         errors: [
           {
             path: 'email',
-            message: 'No account found with this email address'
-          }
-        ]
+            message: 'No account found with this email address',
+          },
+        ],
       });
     }
 
@@ -113,9 +120,9 @@ export class AuthService {
         errors: [
           {
             path: 'password',
-            message: 'Incorrect password'
-          }
-        ]
+            message: 'Incorrect password',
+          },
+        ],
       });
     }
 
